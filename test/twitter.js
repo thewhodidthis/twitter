@@ -120,8 +120,8 @@ describe('Twitter', function() {
     });
   });
 
-  describe('Prototypes', function() {
-    describe('prototype.__buildEndpoint();', function() {
+  describe('Methods', function() {
+    describe('__buildEndpoint()', function() {
       var client;
 
       before(function() {
@@ -178,16 +178,63 @@ describe('Twitter', function() {
       });
     });
 
-    describe('prototype.__request();', function() {
+    describe('__request()', function(){
+      before(function(){
+        this.nock = nock('https://api.twitter.com');
+        this.twitter = new Twitter();
+      });
+
+      it('accepts a 2xx response', function(done) {
+        var jsonResponse = {favorites: [] };
+        this.nock.get(/.*/).reply(201, jsonResponse);
+        this.twitter.__request('get', '/tweet', function(error, data, response){
+          assert.equal(error, null);
+          assert.deepEqual(data, jsonResponse);
+          assert.notEqual(response, null);
+          done();
+        });
+      });
+
+      it('errors on non 4xx or 5xx responses', function(done){
+        var jsonResponse = {errors: ['nope']};
+        this.nock.get(/.*/).reply(403, jsonResponse);
+        this.twitter.__request('get', '/tweet', function(error, data, response){
+          assert.deepEqual(error, ['nope']);
+          assert.deepEqual(data, jsonResponse);
+          assert.notEqual(response, null);
+          done();
+        });
+      });
+
+      it('errors on bad json', function(done) {
+        this.nock.get(/.*/).reply(500, 'fail whale');
+        this.twitter.__request('get', '/tweet', function(error, data, response){
+          assert(error instanceof Error);
+          assert.equal(data, 'fail whale');
+          assert.notEqual(response, null);
+          done();
+        });
+      });
+
+      it('errors on a request or network error', function(done) {
+        this.nock.get(/.*/).replyWithError('something bad happened');
+        this.twitter.__request('get', '/tweet', function(error, data, response){
+          assert(error instanceof Error);
+          assert.equal(error.message, 'something bad happened');
+          assert.equal(data, undefined);
+          assert.equal(response, undefined);
+          done();
+        });
+      });
     });
 
-    describe('prototype.__get();', function() {
+    describe('get();', function() {
     });
 
-    describe('prototype.__post();', function() {
+    describe('post()', function() {
     });
 
-    describe('prototype.__stream();', function() {
+    describe('stream()', function() {
     });
   });
 
