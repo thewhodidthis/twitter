@@ -157,6 +157,7 @@ const isTweet = _.conforms({
 * [Streams](https://github.com/desmondmorris/node-twitter/tree/master/examples#streams)
 * [Proxy](https://github.com/desmondmorris/node-twitter/tree/master/examples#proxy)
 * [Media](https://github.com/desmondmorris/node-twitter/tree/master/examples#media)
+* [Chunked Media](https://github.com/desmondmorris/node-twitter/tree/master/examples#chunked-media)
 
 ## Contributors
 
