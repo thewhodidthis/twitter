@@ -1,5 +1,5 @@
 ## Twitter
-> Client lib for interacting with twitter api, rewrite of desmondmorris/node-twitter
+> Client lib for interacting with twitter api, rewrite of desmondmorris/node-twitter, work in progress
 
 ### Setup
 ```sh
