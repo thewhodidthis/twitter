@@ -36,7 +36,7 @@ class Twitter {
 
     // If using application only authentication
     if (this._login.bearer) {
-      this._request.headers['Authorization'] = 'Bearer ' + this._login.bearer;
+      this._request.headers.authorization = 'Bearer ' + this._login.bearer;
     }
   }
 
@@ -57,12 +57,12 @@ class Twitter {
     var endpoint = encodeURIComponent(`https:\/\/${options.hostname}${url.parse(options.path).pathname}`);
 
     var parts = {
-      'oauth_consumer_key': consumerKey,
-      'oauth_nonce': nonce,
-      'oauth_signature_method': 'HMAC-SHA1',
-      'oauth_timestamp': timestamp,
-      'oauth_token': accessToken,
-      'oauth_version': '1.0'
+      oauth_consumer_key: consumerKey,
+      oauth_nonce: nonce,
+      oauth_signature_method: 'HMAC-SHA1',
+      oauth_timestamp: timestamp,
+      oauth_token: accessToken,
+      oauth_version: '1.0'
     };
 
     var percentEncode = this.fixedEncodeURIComponent;
@@ -75,7 +75,7 @@ class Twitter {
     var parameterString = Object.keys(partsAndParams).sort().reduce((prev, curr) => {
       var p = prev.length ? `${prev}&` : '';
       var c = percentEncode(curr);
-      var v = percentEncode(partsAndParams[curr])
+      var v = percentEncode(partsAndParams[curr]);
 
       return `${p}${c}=${v}`;
     }, '');
@@ -91,13 +91,17 @@ class Twitter {
       parts[part] = percentEncode(parts[part]);
     });
 
-    return `OAuth oauth_consumer_key="${consumerKey}", oauth_nonce="${nonce}", oauth_signature="${signature}", oauth_signature_method="${signatureMethod}", oauth_timestamp="${timestamp}", oauth_token="${accessToken}", oauth_version="${version}"`;
+    return `OAuth oauth_consumer_key="${consumerKey}",
+                  oauth_nonce="${nonce}",
+                  oauth_signature="${signature}",
+                  oauth_signature_method="${signatureMethod}",
+                  oauth_timestamp="${timestamp}",
+                  oauth_token="${accessToken}",
+                  oauth_version="${version}"`;
   }
 
   fixedEncodeURIComponent(target) {
-    return encodeURIComponent(target).replace(/[!'()*]/g, function(c) {
-      return '%' + c.charCodeAt(0).toString(16);
-    });
+    return encodeURIComponent(target).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16));
   }
 
   get(path, params, callback) {
@@ -131,9 +135,7 @@ class Twitter {
         .on('data', chunk => {
           body.push(chunk);
         })
-        .on('end', () => {
-          return callback(null, response, JSON.parse(Buffer.concat(body)));
-        });
+        .on('end', () => callback(null, response, JSON.parse(Buffer.concat(body))));
     });
   }
 
@@ -184,7 +186,7 @@ class Twitter {
     options.headers = Object.assign({}, this._request.headers, options.headers);
 
     // NB: Streaming apis will only accept oauth
-    options.headers['Authorization'] = this._request.headers['Authorization'] || this.buildOauth(options, params);
+    options.headers.authorization = this._request.headers.authorization || this.buildOauth(options, params);
 
     https
       .request(options)
@@ -256,7 +258,6 @@ class Twitter {
 
             try {
               data = JSON.parse(data);
-
               messageTypes.forEach(type => {
                 if (data.hasOwnProperty(type)) {
                   eventType = type;

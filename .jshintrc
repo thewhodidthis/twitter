@@ -4,6 +4,7 @@
   "newcap": false,
   "strict": true,
   "latedef": "nofunc",
+  "loopfunc" : true,
   "plusplus": true,
   "eqnull": true,
   "esnext": true,
