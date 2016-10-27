@@ -1,5 +1,5 @@
 ## Twitter
-> Client lib for interacting with twitter api, fork of desmondmorris/node-twitter
+> Client lib for interacting with twitter api, rewrite of desmondmorris/node-twitter
 
 ### Setup
 ```sh
@@ -34,7 +34,4 @@ client.get('search/tweets', {
 ```
 
 ### Credits
-- [@technoweenie](http://github.com/technoweenie)
-- [@jdub](http://github.com/jdub)
-- [@desmondmorris](http://github.com/desmondmorris)
-- [Other](https://github.com/desmondmorris/node-twitter/graphs/contributors)
+Original authors include [@technoweenie](http://github.com/technoweenie), [@jdub](http://github.com/jdub), [@desmondmorris](http://github.com/desmondmorris), [more &rarr;](https://github.com/desmondmorris/node-twitter/graphs/contributors)
