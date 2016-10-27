@@ -1,31 +1,44 @@
 {
-  "name": "twitter",
-  "version": "1.4.0",
-  "description": "Twitter API client library for node.js",
-  "license": "MIT",
+  "name": "@thewhodidthis/twitter",
+  "version": "0.0.0",
+  "description": "Helps do tweets",
   "keywords": [
-    "twitter",
+    "oauth",
     "streaming",
-    "oauth"
+    "twitter"
   ],
-  "homepage": "https://github.com/desmondmorris/node-twitter",
-  "author": "Desmond Morris <hi@desmondmorris.com>",
+  "main": "index.js",
+  "homepage": "https://github.com/thewhodidthis/twitter#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/desmondmorris/node-twitter"
+    "url": "git+https://github.com/thewhodidthis/twitter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thewhodidthis/twitter/issues"
+  },
+  "directories": {
+    "example": "example"
+  },
+  "config": {
+    "jscsrc": ".jscsrc"
   },
   "scripts": {
-    "test": "npm run lint && mocha",
-    "lint": "./node_modules/.bin/eslint test/*.js lib/*.js"
+    "test": "node test",
+    "cleanup": "rm -f *.log",
+    "lint": "(jshint index.js & jscs index.js --reporter=inlinesingle) 2>&1 | tee lint-js.log",
+    "postlint": "find lint-js.log -size 0 -print0 | xargs -0 rm",
+    "preversion": "npm run cleanup"
   },
-  "dependencies": {
-    "deep-extend": "^0.4.1",
-    "request": "^2.72.0"
+  "engines": {
+    "node": ">=4.2.4",
+    "npm": ">=3.5.3"
   },
+  "dependencies": {},
   "devDependencies": {
-    "eslint": "^2.10.0",
-    "mocha": "^2.4.5",
-    "nock": "^8.0.0"
+    "jscs": "latest",
+    "jshint": "latest",
+    "tape": "latest"
   },
-  "main": "./lib/twitter"
+  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
+  "license": "MIT"
 }
