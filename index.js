@@ -20,13 +20,13 @@ class Twitter {
     this.VERSION = VERSION;
 
     // Merge options and defaults
-    this._login = Object.assign({}, Twitter.defaults, options);
+    this.login = Object.assign({}, Twitter.defaults, options);
 
     // Request defaults
-    this._request = {
+    this.request = {
       headers: {
         Accept: '*/*',
-        'User-Agent': 'minion-' + this.VERSION
+        'User-Agent': `minion-${this.VERSION}`
       },
       hostname: 'api.twitter.com',
       method: 'GET',
@@ -35,28 +35,28 @@ class Twitter {
     };
 
     // If using application only authentication
-    if (this._login.bearer) {
-      this._request.headers.authorization = 'Bearer ' + this._login.bearer;
+    if (this.login.bearer) {
+      this.request.headers.authorization = `Bearer ${this.login.bearer}`;
     }
   }
 
   buildOauth(options, params) {
-    var consumerKey = this._login.consumer_key;
-    var accessToken = this._login.access_token_key;
+    const consumerKey = this.login.consumer_key;
+    const accessToken = this.login.access_token_key;
 
     // Convert the HTTP Method to uppercase
-    var method = options.method.toUpperCase();
+    const method = options.method.toUpperCase();
 
     // base64 encoding 32 bytes of random data, and stripping out all non-word characters
-    var nonce = crypto.randomBytes(32).toString('base64').replace(/\W+/g, '');
+    const nonce = crypto.randomBytes(32).toString('base64').replace(/\W+/g, '');
 
     // Timestamp each request
-    var timestamp = Math.floor((new Date()).getTime() * 0.001);
+    const timestamp = Math.floor((new Date()).getTime() * 0.001);
 
     // Assemble and percent encode request url in full
-    var endpoint = encodeURIComponent(`https:\/\/${options.hostname}${url.parse(options.path).pathname}`);
+    const endpoint = encodeURIComponent(`https://${options.hostname}${url.parse(options.path).pathname}`);
 
-    var parts = {
+    const parts = {
       oauth_consumer_key: consumerKey,
       oauth_nonce: nonce,
       oauth_signature_method: 'HMAC-SHA1',
@@ -65,29 +65,29 @@ class Twitter {
       oauth_version: '1.0'
     };
 
-    var percentEncode = this.fixedEncodeURIComponent;
+    const percentEncode = Twitter.fixedEncodeURIComponent;
 
-    var version = parts.oauth_version;
-    var signatureMethod = parts.oauth_signature_method;
+    const version = parts.oauth_version;
+    const signatureMethod = parts.oauth_signature_method;
 
     // NB: The docs say no encoding of params is needed for uploading media, but
-    var partsAndParams = Object.assign({}, parts, params);
-    var parameterString = Object.keys(partsAndParams).sort().reduce((prev, curr) => {
-      var p = prev.length ? `${prev}&` : '';
-      var c = percentEncode(curr);
-      var v = percentEncode(partsAndParams[curr]);
+    const partsAndParams = Object.assign({}, parts, params);
+    const parameterString = Object.keys(partsAndParams).sort().reduce((prev, curr) => {
+      const p = prev.length ? `${prev}&` : '';
+      const c = percentEncode(curr);
+      const v = percentEncode(partsAndParams[curr]);
 
       return `${p}${c}=${v}`;
     }, '');
 
-    var encodedParameterString = percentEncode(parameterString);
-    var signatureBaseString = `${method}&${endpoint}&${encodedParameterString}`;
-    var consumerSecret = percentEncode(this._login.consumer_secret);
-    var tokenSecret = percentEncode(this._login.access_token_secret);
-    var signingKey = consumerSecret + '&' + tokenSecret;
-    var signature = percentEncode(crypto.createHmac('sha1', signingKey).update(signatureBaseString).digest('base64'));
+    const encodedParameterString = percentEncode(parameterString);
+    const signatureBaseString = `${method}&${endpoint}&${encodedParameterString}`;
+    const consumerSecret = percentEncode(this.login.consumer_secret);
+    const tokenSecret = percentEncode(this.login.access_token_secret);
+    const signingKey = `${consumerSecret}&${tokenSecret}`;
+    const signature = percentEncode(crypto.createHmac('sha1', signingKey).update(signatureBaseString).digest('base64'));
 
-    Object.keys(parts).forEach(part => {
+    Object.keys(parts).forEach((part) => {
       parts[part] = percentEncode(parts[part]);
     });
 
@@ -100,13 +100,13 @@ class Twitter {
                   oauth_version="${version}"`;
   }
 
-  fixedEncodeURIComponent(target) {
-    return encodeURIComponent(target).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16));
+  static fixedEncodeURIComponent(target) {
+    return encodeURIComponent(target).replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16)}`);
   }
 
   get(path, params, callback) {
-    var options = {
-      hostname: this._request.hostname
+    let options = {
+      hostname: this.request.hostname
     };
 
     if (typeof path === 'string') {
@@ -126,13 +126,13 @@ class Twitter {
 
     this.sendRequest(options, params, (error, response) => {
       if (error) {
-        return callback(error);
+        callback(error);
       }
 
       const body = [];
 
       response
-        .on('data', chunk => {
+        .on('data', (chunk) => {
           body.push(chunk);
         })
         .on('end', () => callback(null, response, JSON.parse(Buffer.concat(body))));
@@ -140,26 +140,25 @@ class Twitter {
   }
 
   pathMath(path) {
-
     // Just a precaution
-    var path = url.parse(path).path;
+    let target = url.parse(path).path;
 
     // Prefix
-    path = url.resolve(this._request.path, path);
+    target = url.resolve(this.request.path, target);
 
     // Remove trailing slash
-    path = path.replace(/\/$/, '');
+    target = target.replace(/\/$/, '');
 
     // Add json extension if missing
-    path += path.split('.').pop() !== 'json' ? '.json' : '';
+    target += target.split('.').pop() !== 'json' ? '.json' : '';
 
-    return path;
+    return target;
   }
 
   post(path, params, callback) {
-    var options = {
+    const options = {
       method: 'POST',
-      path: path
+      path
     };
 
     // Be got
@@ -167,35 +166,35 @@ class Twitter {
   }
 
   sendRequest(options, params, callback) {
-    var options = Object.assign({}, this._request, options);
+    const settings = Object.assign({}, this.request, options);
 
     // Format request data
-    var data = JSON.stringify(params);
+    /* const data = JSON.stringify(params); */
 
     // Format request path
-    var path = this.pathMath(options.path);
+    const path = this.pathMath(settings.path);
 
-    var qs = querystring.stringify(params, null, null, {
-      encodeURIComponent: this.fixedEncodeURIComponent
+    const qs = querystring.stringify(params, null, null, {
+      encodeURIComponent: Twitter.fixedEncodeURIComponent
     });
 
     // Set this prior to calculating oauth string
-    options.path = qs ? path + '?' + qs : path;
+    settings.path = qs ? `${path}?${qs}` : path;
 
     // Preserve settings
-    options.headers = Object.assign({}, this._request.headers, options.headers);
+    settings.headers = Object.assign({}, this.request.headers, settings.headers);
 
     // NB: Streaming apis will only accept oauth
-    options.headers.authorization = this._request.headers.authorization || this.buildOauth(options, params);
+    settings.headers.authorization = this.request.headers.authorization || this.buildOauth(settings, params);
 
     https
-      .request(options)
+      .request(settings)
       .on('error', callback)
-      .on('response', response => {
+      .on('response', (response) => {
         if (response.statusCode === 200) {
           callback(null, response);
         } else {
-          return callback(new Error(`HTTP ${response.statusCode} ${response.statusMessage}`), response);
+          callback(new Error(`HTTP ${response.statusCode} ${response.statusMessage}`), response);
         }
 
         response.on('error', callback);
@@ -221,10 +220,10 @@ class Twitter {
       'control'
     ];
 
-    var options = {
+    const options = {
       hostname: 'stream.twitter.com',
       method: 'GET',
-      path: path
+      path
     };
 
     if (path === 'user' || path === 'site') {
@@ -249,7 +248,7 @@ class Twitter {
       let message = '';
 
       response
-        .on('data', chunk => {
+        .on('data', (chunk) => {
           message += chunk.toString('utf8');
 
           while ((ended = message.indexOf(messageEnd)) > 0) {
@@ -258,15 +257,15 @@ class Twitter {
 
             try {
               data = JSON.parse(data);
-              messageTypes.forEach(type => {
-                if (data.hasOwnProperty(type)) {
+              messageTypes.forEach((type) => {
+                if ({}.hasOwnProperty.call(data, type)) {
                   eventType = type;
                 }
               });
 
               stream.emit(eventType, data);
-            } catch (error) {
-              stream.emit('error', error);
+            } catch (e) {
+              stream.emit('error', e);
             }
 
             message = message.slice(ended + messageEnd.length);
