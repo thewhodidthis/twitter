@@ -19,14 +19,10 @@
   "directories": {
     "example": "example"
   },
-  "config": {
-    "jscsrc": ".jscsrc"
-  },
   "scripts": {
     "test": "node test",
     "cleanup": "rm -f *.log",
-    "lint": "(jshint index.js & jscs index.js --reporter=inlinesingle) 2>&1 | tee lint-js.log",
-    "postlint": "find lint-js.log -size 0 -print0 | xargs -0 rm",
+    "lint": "eslint index.js; exit 0",
     "preversion": "npm run cleanup"
   },
   "engines": {
@@ -35,8 +31,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "jscs": "latest",
-    "jshint": "latest",
+    "eslint": "latest",
     "tape": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
