@@ -91,13 +91,7 @@ class Twitter {
       parts[part] = percentEncode(parts[part]);
     });
 
-    return `OAuth oauth_consumer_key="${consumerKey}",
-                  oauth_nonce="${nonce}",
-                  oauth_signature="${signature}",
-                  oauth_signature_method="${signatureMethod}",
-                  oauth_timestamp="${timestamp}",
-                  oauth_token="${accessToken}",
-                  oauth_version="${version}"`;
+    return `OAuth oauth_consumer_key="${consumerKey}", oauth_nonce="${nonce}", oauth_signature="${signature}", oauth_signature_method="${signatureMethod}", oauth_timestamp="${timestamp}", oauth_token="${accessToken}", oauth_version="${version}"`;
   }
 
   static fixedEncodeURIComponent(target) {
