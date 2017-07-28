@@ -2,11 +2,6 @@
   "name": "@thewhodidthis/twitter",
   "version": "0.0.0",
   "description": "Helps do tweets",
-  "keywords": [
-    "oauth",
-    "streaming",
-    "twitter"
-  ],
   "main": "index.js",
   "homepage": "https://github.com/thewhodidthis/twitter#readme",
   "repository": {
@@ -16,24 +11,23 @@
   "bugs": {
     "url": "https://github.com/thewhodidthis/twitter/issues"
   },
-  "directories": {
-    "example": "example"
-  },
   "scripts": {
+    "pretest": "eslint .",
     "test": "node test",
-    "cleanup": "rm -f *.log",
-    "lint": "eslint index.js; exit 0",
-    "preversion": "npm run cleanup"
+    "start": "node example"
+  },
+  "eslintConfig": {
+    "extends": "@thewhodidthis"
   },
   "engines": {
-    "node": ">=4.2.4",
-    "npm": ">=3.5.3"
+    "node": ">=6.4.0",
+    "npm": ">=3.10.3"
   },
   "dependencies": {},
   "devDependencies": {
+    "@thewhodidthis/eslint-config": "latest",
     "eslint": "latest",
-    "eslint-config-airbnb-base": "latest",
-    "eslint-plugin-import": "latest",
+    "nock": "latest",
     "tape": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
