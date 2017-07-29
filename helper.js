@@ -1,0 +1,78 @@
+'use strict'
+
+const crypto = require('crypto')
+const url = require('url')
+const { stringify } = require('querystring')
+
+// Expand on `encodeURIComponent` for percent encoding that works
+// https://github.com/kevva/strict-uri-encode
+const pPrefix = c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+const pEncode = s => encodeURIComponent(s).replace(/[!'()*]/g, pPrefix)
+
+// Path math
+const cutTrailingSlash = s => s.replace(/\/$/, '')
+const addExtension = (s, ext = 'json') => (s.split('.').pop() === ext ? s : `${s}.${ext}`)
+const fixPath = (base = '', path = '') => addExtension(cutTrailingSlash(url.resolve(base, path)))
+
+// Amateurish wrap in quotes
+const quoted = s => `${s.split('=').join('="').replace(/,/g, '",')}"`
+
+// Reorder object keys
+// https://github.com/nodejs/node/issues/6594
+const sorted = (source) => {
+  const result = Object.create(null)
+  const buffer = Object.keys(source).sort()
+
+  for (const k of buffer) {
+    result[k] = source[k]
+  }
+
+  return result
+}
+
+// OAuth string compilation from scratch
+const simpleOauth = (keys = {}) => {
+  const login = Object.assign({
+    access_token_key: null,
+    access_token_secret: null,
+    consumer_key: null,
+    consumer_secret: null
+  }, keys)
+
+  return ({ hostname = '', method = '', path = '' } = {}, params = {}) => {
+    const oauth = {
+      oauth_consumer_key: login.consumer_key,
+      oauth_nonce: crypto.randomBytes(32).toString('base64').replace(/\W+/g, ''),
+      oauth_signature_method: 'HMAC-SHA1',
+      oauth_timestamp: Date.now() * 0.001,
+      oauth_token: login.access_token_key,
+      oauth_version: '1.0'
+    }
+
+    const encodedSecret = pEncode(login.consumer_secret)
+    const encodedTokenSecret = pEncode(login.access_token_secret)
+    const signingKey = `${encodedSecret}&${encodedTokenSecret}`
+
+    let withParams = Object.assign({}, oauth, params)
+
+    withParams = sorted(withParams)
+    withParams = stringify(withParams, null, null, { encodeURIComponent: pEncode })
+    withParams = pEncode(withParams)
+
+    const { pathname } = url.parse(path)
+    const href = encodeURIComponent(`https://${hostname}${pathname}`)
+
+    const signatureBase = `${method}&${href}&${withParams}`
+    const signature = crypto.createHmac('sha1', signingKey).update(signatureBase).digest('base64')
+
+    let signed = Object.assign({}, oauth, { oauth_signature: signature })
+
+    signed = sorted(signed)
+    signed = stringify(signed, ', ', '=', { encodeURIComponent: pEncode })
+    signed = quoted(signed)
+
+    return `OAuth ${signed}`
+  }
+}
+
+module.exports = { fixPath, simpleOauth, strictEncode: pEncode }
