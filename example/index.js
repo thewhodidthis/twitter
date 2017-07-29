@@ -1,15 +1,21 @@
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const util = require('util');
-const path = require('path');
+const path = require('path')
+const fs = require('fs')
 
-// http://stackoverflow.com/questions/18112204/get-all-directories-within-directory-nodejs
-const ls = fs.readdirSync(__dirname).filter(file => {
-  return fs.statSync(path.join(__dirname, file)).isDirectory();
-});
+const ls = (error, files) => {
+  if (error) {
+    console.error(error)
+  } else {
+    files
+      .filter(f => !f.includes('index'))
+      .filter(f => path.extname(f) === '.js')
+      .forEach((file, i) => {
+        const name = file.split('.').shift()
 
-ls.forEach((dir, idx) => {
-  console.log(`${idx + 1}. example/${dir}`);
-});
+        console.log(`${i + 1}. example/${name}`)
+      })
+  }
+}
 
+fs.readdir(__dirname, ls)
