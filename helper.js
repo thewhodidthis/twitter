@@ -40,18 +40,21 @@ const simpleOauth = (keys = {}) => {
   }, keys)
 
   return ({ hostname = '', method = '', path = '' } = {}, params = {}) => {
+    const nonce = crypto.randomBytes(32).toString('base64').replace(/\W+/g, '')
+    const stamp = Date.now() * 0.001
+
     const oauth = {
       oauth_consumer_key: login.consumer_key,
-      oauth_nonce: crypto.randomBytes(32).toString('base64').replace(/\W+/g, ''),
+      oauth_nonce: nonce,
       oauth_signature_method: 'HMAC-SHA1',
-      oauth_timestamp: Date.now() * 0.001,
+      oauth_timestamp: stamp,
       oauth_token: login.access_token_key,
       oauth_version: '1.0'
     }
 
-    const encodedSecret = pEncode(login.consumer_secret)
-    const encodedTokenSecret = pEncode(login.access_token_secret)
-    const signingKey = `${encodedSecret}&${encodedTokenSecret}`
+    const secret = pEncode(login.consumer_secret)
+    const tokenSecret = pEncode(login.access_token_secret)
+    const signingKey = `${secret}&${tokenSecret}`
 
     let withParams = Object.assign({}, oauth, params)
 
