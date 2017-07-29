@@ -1,5 +1,5 @@
 ## Twitter
-> Client lib for interacting with twitter api, work in progress
+> Work in progress
 
 ### Setup
 ```sh
@@ -14,21 +14,21 @@ node node_modules/@thewhodidthis/twitter/example
 ```js
 'use strict';
 
-const Twitter = require('@thewhodidthis/twitter');
-const client = new Twitter({
+const createClient = require('@thewhodidthis/twitter');
+const client = createClient({
 	consumer_key: '',
 	consumer_secret: '',
 	access_token_key: '',
 	access_token_secret: ''
 });
 
-client.get('search/tweets', {
-  q: '#freebandnames'
-}, (error, reponse, body) => {
+client.pull('search/tweets', {
+  q: '#trump'
+}, (error, data) => {
   if (error) {
     console.error(error);
   } else {
-    console.log(body);
+    console.log(data.statuses);
   }
 });
 ```
