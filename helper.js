@@ -6,16 +6,13 @@ const { stringify } = require('querystring')
 
 // Expand on `encodeURIComponent` for percent encoding that works
 // https://github.com/kevva/strict-uri-encode
-const pPrefix = c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-const pEncode = s => encodeURIComponent(s).replace(/[!'()*]/g, pPrefix)
+const repair = c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+const strictEncode = s => encodeURIComponent(s).replace(/[!'()*]/g, repair)
 
 // Path math
 const cutTrailingSlash = s => s.replace(/\/$/, '')
 const addExtension = (s, ext = 'json') => (s.split('.').pop() === ext ? s : `${s}.${ext}`)
 const fixPath = (base = '', path = '') => addExtension(cutTrailingSlash(url.resolve(base, path)))
-
-// Amateurish wrap in quotes
-const quoted = s => `${s.split('=').join('="').replace(/,/g, '",')}"`
 
 // Reorder object keys
 // https://github.com/nodejs/node/issues/6594
@@ -52,15 +49,15 @@ const simpleOauth = (keys = {}) => {
       oauth_version: '1.0'
     }
 
-    const secret = pEncode(login.consumer_secret)
-    const tokenSecret = pEncode(login.access_token_secret)
+    const secret = strictEncode(login.consumer_secret)
+    const tokenSecret = strictEncode(login.access_token_secret)
     const signingKey = `${secret}&${tokenSecret}`
 
     let withParams = Object.assign({}, oauth, params)
 
     withParams = sorted(withParams)
-    withParams = stringify(withParams, null, null, { encodeURIComponent: pEncode })
-    withParams = pEncode(withParams)
+    withParams = stringify(withParams, null, null, { encodeURIComponent: strictEncode })
+    withParams = strictEncode(withParams)
 
     const { pathname } = url.parse(path)
     const href = encodeURIComponent(`https://${hostname}${pathname}`)
@@ -71,11 +68,10 @@ const simpleOauth = (keys = {}) => {
     let signed = Object.assign({}, oauth, { oauth_signature: signature })
 
     signed = sorted(signed)
-    signed = stringify(signed, ', ', '=', { encodeURIComponent: pEncode })
-    signed = quoted(signed)
+    signed = stringify(signed, '", ', '="', { encodeURIComponent: strictEncode })
 
-    return `OAuth ${signed}`
+    return `OAuth ${signed}"`
   }
 }
 
-module.exports = { fixPath, simpleOauth, strictEncode: pEncode }
+module.exports = { fixPath, simpleOauth, strictEncode }
