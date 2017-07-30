@@ -68,9 +68,9 @@ const simpleOauth = (keys = {}) => {
     let signed = Object.assign({}, oauth, { oauth_signature: signature })
 
     signed = sorted(signed)
-    signed = stringify(signed, '", ', '="', { encodeURIComponent: strictEncode })
+    signed = `${stringify(signed, '", ', '="', { encodeURIComponent: strictEncode })}"`
 
-    return `OAuth ${signed}"`
+    return `OAuth ${signed}`
   }
 }
 
