@@ -44,12 +44,13 @@ const createClient = (login = {}) => {
       .request(settings)
       .on('error', handleError)
       .on('response', (response) => {
-        response.on('error', handleError)
         if (response.statusCode === 200) {
           response.pipe(parser)
         } else {
           handleError(Error(`HTTP: ${response.statusCode} ${response.statusMessage}`))
         }
+
+        response.on('error', handleError)
       })
       .end()
 
