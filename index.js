@@ -19,11 +19,14 @@ const createClient = (login = {}) => {
   const authFrom = simpleOauth(login)
 
   const send = (request = {}, params, parser) => {
-    const handleError = (error) => { parser.emit('error', error) }
-    const queryString = stringify(params, null, null, { encodeURIComponent: strictEncode })
+    const handleError = (e) => { parser.emit('error', e) }
 
     const { path } = request
-    const pathname = fixPath(basePath, path)
+
+    // For now, but see: https://dev.twitter.com/webhooks/account-activity
+    if (path === 'user' || path === 'site') {
+      request.hostname += path
+    }
 
     // Marginally relevant for GET requests as well
     if (path.includes('media')) {
@@ -36,6 +39,8 @@ const createClient = (login = {}) => {
     }
 
     const settings = Object.assign({}, defaults, request)
+    const pathname = fixPath(basePath, path)
+    const queryString = stringify(params, null, null, { encodeURIComponent: strictEncode })
 
     settings.path = queryString ? `${pathname}?${queryString}` : pathname
     settings.headers.authorization = authFrom(settings, params)
@@ -47,7 +52,9 @@ const createClient = (login = {}) => {
         if (response.statusCode === 200) {
           response.pipe(parser)
         } else {
-          handleError(Error(`HTTP: ${response.statusCode} ${response.statusMessage}`))
+          const { statusCode: code, statusMessage: message } = request
+
+          handleError({ code, message })
         }
 
         response.on('error', handleError)
