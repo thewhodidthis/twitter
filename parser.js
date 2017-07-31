@@ -4,6 +4,11 @@ const { Writable } = require('stream')
 
 const noop = () => {}
 
+/* eslint no-invalid-this: 1 */
+const errorHandler = function (e) {
+  this.emit('error', e)
+}
+
 // My ndjson streaming parser
 const delimit = (broker = noop) => {
   let body = ''
@@ -16,15 +21,15 @@ const delimit = (broker = noop) => {
       body += chunk.toString()
 
       while ((mark = body.indexOf(marker)) > 0) {
-        const data = body.slice(0, mark)
+        const section = body.slice(0, mark)
 
-        try {
-          const result = JSON.parse(data)
+        const data = JSON.parse(section)
+        const { errors } = data
 
-          // Check for errors in this json block
-          parser.emit('data', result)
-        } catch (e) {
-          parser.emit('error', e)
+        if (errors) {
+          errors.forEach(errorHandler, parser)
+        } else {
+          parser.emit('data', data)
         }
 
         body = body.slice(mark + border)
@@ -36,7 +41,7 @@ const delimit = (broker = noop) => {
 
   parser
     .on('error', broker)
-    .on('data', (message) => { broker(null, message) })
+    .on('data', (data) => { broker(null, data) })
 
   return parser
 }
@@ -54,15 +59,15 @@ const concat = (broker = noop) => {
   sink
     .on('error', broker)
     .on('finish', () => {
-      const data = Buffer.concat(body).toString()
+      const result = Buffer.concat(body).toString()
 
-      try {
-        const result = JSON.parse(data)
+      const data = JSON.parse(result)
+      const { errors } = data
 
-        // Check for errors in this json block
-        broker(null, result)
-      } catch (e) {
-        broker(e)
+      if (errors) {
+        errors.forEach(errorHandler, sink)
+      } else {
+        broker(null, data)
       }
     })
 
