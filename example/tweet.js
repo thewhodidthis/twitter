@@ -6,10 +6,10 @@ const client = require('../')(config)
 
 const status = crypto.randomBytes(64).toString('hex').substring(0, 144)
 
-client.push('statuses/update', { status }, (error, data) => {
+client.push('statuses/update', { status }, (error, { text }) => {
   if (error) {
     console.error(error)
   } else {
-    console.log(data.text)
+    console.log(text)
   }
 })

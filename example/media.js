@@ -16,11 +16,11 @@ const post = ({ media_id_string = '' } = {}) => {
     media_ids: media_id_string
   }
 
-  client.push('statuses/update', tweet, (error, data) => {
+  client.push('statuses/update', tweet, (error, { text }) => {
     if (error) {
       console.error(error)
     } else {
-      console.log(data)
+      console.log(text)
     }
   })
 }

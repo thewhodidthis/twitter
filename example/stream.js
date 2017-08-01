@@ -6,4 +6,4 @@ const client = require('../')(config)
 client
   .tail('statuses/sample')
   .on('error', console.error)
-  .on('data', (data) => { console.log(data.text) })
+  .on('data', ({ text }) => { console.log(text) })

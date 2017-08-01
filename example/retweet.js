@@ -3,11 +3,11 @@
 const config = require('../config')()
 const client = require('../')(config)
 
-const logger = (error, data) => {
+const logger = (error, { text }) => {
   if (error) {
     console.error(error)
   } else {
-    console.log(data.text)
+    console.log(text)
   }
 }
 
