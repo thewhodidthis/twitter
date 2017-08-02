@@ -74,4 +74,7 @@ const simpleOauth = (keys = {}) => {
   }
 }
 
-module.exports = { fixPath, simpleOauth, strictEncode }
+// For determining callback or params
+const isFunction = a => typeof a === 'function'
+
+module.exports = { fixPath, simpleOauth, strictEncode, isFunction }

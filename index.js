@@ -3,7 +3,7 @@
 const https = require('https')
 const { stringify } = require('querystring')
 
-const { fixPath, simpleOauth, strictEncode } = require('./helper')
+const { fixPath, simpleOauth, strictEncode, isFunction } = require('./helper')
 const { delimit, concat } = require('./parser')
 const { version } = require('./package.json')
 
@@ -52,7 +52,7 @@ const createClient = (login = {}) => {
         if (response.statusCode === 200) {
           response.pipe(parser)
         } else {
-          const { statusCode: code, statusMessage: message } = request
+          const { statusCode: code, statusMessage: message } = response
 
           handleError({ code, message })
         }
@@ -65,8 +65,8 @@ const createClient = (login = {}) => {
   }
 
   const pull = (request = {}, args) => {
-    const callback = args.pop()
-    const [params] = args
+    const callback = args.find(isFunction)
+    const params = args.filter(a => !isFunction(a)).pop()
 
     const { hostname: target } = request
     const parser = (target && target.includes('stream') ? delimit : concat)(callback)
