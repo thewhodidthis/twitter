@@ -16,12 +16,13 @@ const delimit = (broker = noop) => {
 
   const marker = '\r\n'
   const border = marker.length
+
   const parser = new Writable({
     write(chunk, encoding, next) {
       body += chunk.toString()
 
-      while ((mark = body.indexOf(marker)) > 0) {
-        const section = body.slice(0, mark)
+      while ((mark = body.indexOf(marker)) > -1) {
+        const section = body.slice(0, mark) || '{}'
 
         const data = JSON.parse(section)
         const { errors } = data
