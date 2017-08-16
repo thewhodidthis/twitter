@@ -50,7 +50,7 @@ const createClient = (login = {}) => {
       .on('error', handleError)
       .on('response', (response) => {
         if (response.statusCode === 200) {
-          response.pipe(parser)
+          response.pipe(parser).on('finish', () => { response.socket.destroy() })
         } else {
           const { statusCode: code, statusMessage: message } = response
 
