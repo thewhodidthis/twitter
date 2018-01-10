@@ -4,7 +4,7 @@ const https = require('https')
 const { stringify } = require('querystring')
 
 const { fixPath, simpleOauth, strictEncode, isFunction } = require('./helper')
-const { delimit, concat } = require('./parser')
+const { split, unite } = require('./parser')
 const { version } = require('./package.json')
 
 const basePath = '/1.1/'
@@ -19,8 +19,6 @@ const createClient = (login = {}) => {
   const authFrom = simpleOauth(login)
 
   const send = (request = {}, params, parser) => {
-    const handleError = (e) => { parser.emit('error', e) }
-
     const { path } = request
 
     // For now, but see: https://dev.twitter.com/webhooks/account-activity
@@ -40,6 +38,7 @@ const createClient = (login = {}) => {
 
     const settings = Object.assign({}, defaults, request)
     const pathname = fixPath(basePath, path)
+
     const queryString = stringify(params, null, null, { encodeURIComponent: strictEncode })
 
     settings.path = queryString ? `${pathname}?${queryString}` : pathname
@@ -47,17 +46,23 @@ const createClient = (login = {}) => {
 
     https
       .request(settings)
-      .on('error', handleError)
+      .on('error', (e) => {
+        parser.emit('error', e)
+      })
       .on('response', (response) => {
         if (response.statusCode === 200) {
-          response.pipe(parser).on('finish', () => { response.socket.destroy() })
+          response.pipe(parser).on('finish', () => {
+            response.socket.destroy()
+          })
         } else {
           const { statusCode: code, statusMessage: message } = response
 
-          handleError({ code, message })
+          parser.emit('error', { code, message })
         }
 
-        response.on('error', handleError)
+        response.on('error', (e) => {
+          parser.emit('error', e)
+        })
       })
       .end()
 
@@ -69,7 +74,7 @@ const createClient = (login = {}) => {
     const params = args.filter(a => !isFunction(a)).pop()
 
     const { hostname: target } = request
-    const parser = (target && target.includes('stream') ? delimit : concat)(callback)
+    const parser = (target && target.includes('stream') ? split : unite)(callback)
 
     return send(request, params, parser)
   }
