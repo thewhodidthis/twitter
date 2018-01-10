@@ -2,77 +2,74 @@
 
 const { Writable } = require('stream')
 
-const noop = () => {}
+const noop = v => v
 
-/* eslint no-invalid-this: 1 */
-const errorHandler = function (e) {
-  this.emit('error', e)
-}
-
-// My ndjson streaming parser
-const delimit = (broker = noop) => {
-  let body = ''
-  let mark = -1
-
-  const marker = '\r\n'
-  const border = marker.length
+// My ndjson stream
+const split = (callback = noop) => {
+  let store = ''
 
   const parser = new Writable({
     write(chunk, encoding, next) {
-      body += chunk.toString()
+      const input = store + chunk.toString()
+      const items = input.split('\r\n')
 
-      while ((mark = body.indexOf(marker)) > -1) {
-        const section = body.slice(0, mark) || '{}'
+      store = items.pop()
 
-        const data = JSON.parse(section)
+      items.forEach((item) => {
+        const data = JSON.parse(item)
         const { errors } = data
 
         if (errors) {
-          errors.forEach(errorHandler, parser)
+          errors.forEach((e) => {
+            parser.emit('error', e)
+          })
         } else {
           parser.emit('data', data)
         }
-
-        body = body.slice(mark + border)
-      }
+      })
 
       next()
     }
   })
 
   parser
-    .on('error', broker)
-    .on('data', (data) => { broker(null, data) })
+    .on('error', callback)
+    .on('data', (data) => {
+      callback(null, data)
+    })
 
   return parser
 }
 
 // My concat stream
-const concat = (broker = noop) => {
-  const body = []
-  const sink = new Writable({
+const unite = (callback = noop) => {
+  const memo = []
+
+  const parser = new Writable({
     write(chunk, encoding, next) {
-      body.push(chunk)
+      memo.push(chunk)
       next()
     }
   })
 
-  sink
-    .on('error', broker)
+  parser
+    .on('error', callback)
     .on('finish', () => {
-      const result = Buffer.concat(body).toString()
+      const body = Buffer.concat(memo).toString()
 
-      const data = JSON.parse(result)
+      const data = JSON.parse(body)
       const { errors } = data
 
       if (errors) {
-        errors.forEach(errorHandler, sink)
+        errors.forEach((e) => {
+          parser.emit('error', e)
+        })
       } else {
-        broker(null, data)
+        callback(null, data)
       }
     })
 
-  return sink
+  return parser
 }
 
-module.exports = { delimit, concat }
+module.exports = { split, unite }
