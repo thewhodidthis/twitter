@@ -2,6 +2,9 @@
   "name": "@thewhodidthis/twitter",
   "version": "2.0.4",
   "description": "Helps do tweets",
+  "keywords": [
+    "twitter"
+  ],
   "main": "index.js",
   "homepage": "https://github.com/thewhodidthis/twitter#readme",
   "repository": {
@@ -31,7 +34,7 @@
     "@thewhodidthis/eslint-config": "latest",
     "eslint": "latest",
     "nock": "latest",
-    "tape": "latest"
+    "tapeless": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "MIT"
