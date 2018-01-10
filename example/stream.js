@@ -6,4 +6,8 @@ const client = require('../')(config)
 client
   .tail('statuses/sample')
   .on('error', console.error)
-  .on('data', ({ text }) => { console.log(text) })
+  .on('data', ({ text }) => {
+    if (text) {
+      console.log(text)
+    }
+  })
