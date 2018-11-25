@@ -1,5 +1,5 @@
 ## Twitter
-> Work in progress
+> Yet another twitter client
 
 ### Setup
 ```sh
