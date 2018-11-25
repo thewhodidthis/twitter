@@ -36,54 +36,55 @@ const createClient = (login = {}) => {
       request.method = 'POST'
     }
 
-    const settings = Object.assign({}, defaults, request)
-    const pathname = fixPath(basePath, path)
-
     const queryString = stringify(params, null, null, { encodeURIComponent: strictEncode })
+
+    const pathname = fixPath(basePath, path)
+    const settings = Object.assign({}, defaults, request)
 
     settings.path = queryString ? `${pathname}?${queryString}` : pathname
     settings.headers.authorization = authFrom(settings, params)
 
-    https
-      .request(settings)
+    https.request(settings)
       .on('error', (e) => {
         parser.emit('error', e)
       })
       .on('response', (response) => {
         if (response.statusCode === 200) {
-          response.pipe(parser).on('finish', () => {
-            response.socket.destroy()
-          })
+          response.pipe(parser)
+            .on('finish', () => {
+              response.socket.destroy()
+            })
         } else {
           const { statusCode: code, statusMessage: message } = response
 
           parser.emit('error', { code, message })
         }
 
-        response.on('error', (e) => {
-          parser.emit('error', e)
-        })
+        response
+          .on('error', (e) => {
+            parser.emit('error', e)
+          })
       })
       .end()
 
     return parser
   }
 
-  const pull = (request = {}, args) => {
-    const callback = args.find(isFunction)
-    const params = args.filter(a => !isFunction(a)).pop()
+  const pull = (request = {}, ...rest) => {
+    const callback = rest.find(isFunction)
+    const params = rest.filter(a => !isFunction(a)).pop()
 
-    const { hostname: target } = request
-    const parser = (target && target.includes('stream') ? split : unite)(callback)
+    const { hostname } = request
+    const parser = (hostname && hostname.includes('stream') ? split : unite)(callback)
 
     return send(request, params, parser)
   }
 
   return {
-    pull: (path, ...rest) => pull({ path }, rest),
-    push: (path, ...rest) => pull({ path, method: 'POST' }, rest),
-    drop: (path, ...rest) => pull({ path, method: 'DELETE' }, rest),
-    tail: (path, ...rest) => pull({ path, hostname: 'stream.twitter.com' }, rest)
+    pull: (path, ...rest) => pull({ path }, ...rest),
+    push: (path, ...rest) => pull({ path, method: 'POST' }, ...rest),
+    drop: (path, ...rest) => pull({ path, method: 'DELETE' }, ...rest),
+    tail: (path, ...rest) => pull({ path, hostname: 'stream.twitter.com' }, ...rest)
   }
 }
 
