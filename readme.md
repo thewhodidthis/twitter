@@ -14,18 +14,18 @@ node node_modules/@thewhodidthis/twitter/example
 ```js
 const createClient = require('@thewhodidthis/twitter')
 const client = createClient({
-    consumer_key: '',
-    consumer_secret: '',
-    access_token_key: '',
-    access_token_secret: ''
+  consumer_key: '',
+  consumer_secret: '',
+  access_token_key: '',
+  access_token_secret: ''
 })
 
 client.pull('search/tweets', { q: '#trump' }, (error, { statuses }) => {
-    if (error) {
-        console.error(error)
-    } else {
-        console.log(statuses)
-    }
+  if (error) {
+    console.error(error)
+  } else {
+    console.log(statuses)
+  }
 })
 ```
 
