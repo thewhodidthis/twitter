@@ -29,12 +29,11 @@
     "node": ">=6.4.0",
     "npm": ">=3.10.3"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@thewhodidthis/eslint-config": "latest",
-    "eslint": "latest",
-    "nock": "latest",
-    "tapeless": "latest"
+    "@thewhodidthis/eslint-config": "^0.0.16",
+    "eslint": "^6.8.0",
+    "nock": "^12.0.0",
+    "tapeless": "^0.0.9"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "MIT"
