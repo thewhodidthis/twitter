@@ -6,7 +6,8 @@ const { ok, equal } = require('tapeless')
 const config = require('./config')()
 const client = require('./')(config)
 
-ok.describe('client', 'will init')
+ok
+  .describe('client', 'will init')
   .test(client)
 
 // Streaming
@@ -42,10 +43,12 @@ ok.describe('client', 'will init')
     .reply(200, { statuses: [{ text: 'RT @DearAuntCrabby: Installing Gen John Kelly as Chief of Staff in the #Trump White House is like putting on fresh pair tighty-whities' }] })
 
   client.pull('search/tweets', params, (error, { statuses }) => {
-    equal.describe('no errors')
+    equal
+      .describe('no errors')
       .test(error, null)
 
-    ok.test(statuses)
+    ok
+      .test(statuses)
       .test(Array.isArray(statuses))
 
     equal
@@ -63,10 +66,12 @@ ok.describe('client', 'will init')
   client.push('statuses/mama', (error, data) => {
     const { code, message } = error
 
-    ok.describe(`${code} ~> ${message}`)
+    ok
+      .describe(`${code} ~> ${message}`)
       .test(error)
 
-    equal.describe('data not', 'will report errors')
+    equal
+      .describe('data not', 'will report errors')
       .test(data, undefined)
   })
 
@@ -81,10 +86,12 @@ ok.describe('client', 'will init')
   client.push('statuses/update', params, (error, data) => {
     const { code, message } = error
 
-    ok.describe(`${code} ~> ${message}`)
+    ok
+      .describe(`${code} ~> ${message}`)
       .test(error)
 
-    equal.describe('data not', 'will report extra errors')
+    equal
+      .describe('data not', 'will report extra errors')
       .test(data, undefined)
   })
 })()
