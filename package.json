@@ -5,19 +5,21 @@
   "keywords": [
     "twitter"
   ],
-  "main": "index.js",
   "homepage": "https://github.com/thewhodidthis/twitter#readme",
+  "bugs": {
+    "url": "https://github.com/thewhodidthis/twitter/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thewhodidthis/twitter.git"
   },
-  "bugs": {
-    "url": "https://github.com/thewhodidthis/twitter/issues"
-  },
+  "license": "MIT",
+  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
+  "main": "index.js",
   "scripts": {
+    "start": "node example",
     "pretest": "eslint .",
-    "test": "node test",
-    "start": "node example"
+    "test": "node test"
   },
   "eslintConfig": {
     "extends": "@thewhodidthis",
@@ -25,16 +27,14 @@
       "camelcase": 0
     }
   },
-  "engines": {
-    "node": ">=6.4.0",
-    "npm": ">=3.10.3"
-  },
   "devDependencies": {
     "@thewhodidthis/eslint-config": "^0.0.16",
     "eslint": "^6.8.0",
     "nock": "^12.0.0",
     "tapeless": "^0.0.9"
   },
-  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
-  "license": "MIT"
+  "engines": {
+    "node": ">=6.4.0",
+    "npm": ">=3.10.3"
+  }
 }
