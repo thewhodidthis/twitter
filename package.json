@@ -14,8 +14,11 @@
     "url": "git+https://github.com/thewhodidthis/twitter.git"
   },
   "license": "MIT",
-  "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
+  "author": "Sotiri Bakagiannis <sotirios.bakagiannis@gmail.com> (http://thewhodidthis.com)",
   "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
   "scripts": {
     "start": "node example",
     "pretest": "eslint .",
@@ -27,6 +30,7 @@
       "camelcase": 0
     }
   },
+  "dependencies": {},
   "devDependencies": {
     "@thewhodidthis/eslint-config": "^0.0.17",
     "eslint": "^6.8.0",
