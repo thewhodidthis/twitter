@@ -30,4 +30,4 @@ client.pull('search/tweets', { q: '#trump' }, (error, { statuses }) => {
 ```
 
 ### Credits
-Original authors: [@technoweenie](http://github.com/technoweenie), [@jdub](http://github.com/jdub), [@desmondmorris](http://github.com/desmondmorris), [more &rarr;](https://github.com/desmondmorris/node-twitter/graphs/contributors)
+Original authors: [@technoweenie](http://github.com/technoweenie), [@jdub](http://github.com/jdub), [@desmondmorris](http://github.com/desmondmorris), [all &rarr;](https://github.com/desmondmorris/node-twitter/graphs/contributors)
