@@ -42,7 +42,7 @@ ok
     .query(params)
     .reply(200, { statuses: [{ text: 'RT @DearAuntCrabby: Installing Gen John Kelly as Chief of Staff in the #Trump White House is like putting on fresh pair tighty-whities' }] })
 
-  client.pull('search/tweets', params, (error, { statuses }) => {
+  client.pull('search/tweets', params, (error, { statuses = [] } = {}) => {
     equal
       .describe('no errors')
       .test(error, null)
