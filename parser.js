@@ -4,29 +4,33 @@ const { Writable } = require('stream')
 
 const noop = v => v
 
-// My ndjson stream
-const split = (callback = noop) => {
+// My ndjson stream informed by ndjson/ndjson-spec, maxogden/ndjson and mcollina/split2 (delimiter)
+const split = (callback = noop, delimiter = /\r?\n/) => {
   let store = ''
 
   const parser = new Writable({
     write(chunk, encoding, next) {
       const input = store + chunk.toString()
-      const items = input.split('\r\n')
+      const items = input.split(delimiter)
 
       store = items.pop()
 
-      items.forEach((item) => {
-        const data = JSON.parse(item)
-        const { errors } = data
+      for (const item of items) {
+        try {
+          const data = JSON.parse(item)
+          const { errors } = data
 
-        if (errors) {
-          errors.forEach((e) => {
-            parser.emit('error', e)
-          })
-        } else {
-          parser.emit('data', data)
+          if (errors) {
+            errors.forEach((e) => {
+              parser.emit('error', e)
+            })
+          } else {
+            parser.emit('data', data)
+          }
+        } catch (e) {
+          callback(e)
         }
-      })
+      }
 
       next()
     }
@@ -55,9 +59,11 @@ const unite = (callback = noop) => {
   parser
     .on('error', callback)
     .on('finish', () => {
+      // If any of Buffer or JSON operations throw,
+      // the error gets passed on to `callback` via listener above
       const body = Buffer.concat(memo).toString()
-
       const data = JSON.parse(body)
+
       const { errors } = data
 
       if (errors) {
