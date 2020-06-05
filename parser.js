@@ -4,7 +4,10 @@ const { Writable } = require('stream')
 
 const noop = v => v
 
-// My ndjson stream informed by ndjson/ndjson-spec, maxogden/ndjson and mcollina/split2 (delimiter)
+// My ndjson stream informed by:
+// - ndjson/ndjson-spec
+// - maxogden/ndjson
+// - mcollina/split2 (delimiter)
 const split = (callback = noop, delimiter = /\r?\n/) => {
   let store = ''
 
