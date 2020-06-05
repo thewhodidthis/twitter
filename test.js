@@ -3,7 +3,14 @@
 const nock = require('nock')
 const { ok, equal } = require('tapeless')
 
-const config = require('./config')()
+const {
+  npm_config_consumer_key: consumer_key,
+  npm_config_consumer_secret: consumer_secret,
+  npm_config_access_token_key: access_token_key,
+  npm_config_access_token_secret: access_token_secret
+} = process.env
+
+const config = { consumer_key, consumer_secret, access_token_key, access_token_secret }
 const client = require('./')(config)
 
 ok
