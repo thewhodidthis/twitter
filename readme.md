@@ -1,6 +1,6 @@
 ## about
 
-A twitter API client for Node.js with own [OAuth](https://developer.twitter.com/en/docs/basics/authentication/guides) and [NDJSON](https://github.com/ndjson/ndjson-spec) helpers.
+A Twitter API client for Node.js with own [OAuth](https://developer.twitter.com/en/docs/basics/authentication/guides) and [NDJSON](https://github.com/ndjson/ndjson-spec) helpers.
 
 ## setup
 
