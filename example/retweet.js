@@ -1,13 +1,13 @@
 'use strict'
 
-const config = require('../config')()
-const client = require('../')(config)
+const keys = require('./keys.js')
+const client = require('../')(keys)
 
-const logger = (error, { text }) => {
+const logger = (error, data) => {
   if (error) {
     console.error(error)
   } else {
-    console.log(text)
+    console.log(data.text)
   }
 }
 

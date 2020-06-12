@@ -3,8 +3,8 @@
 const path = require('path')
 const fs = require('fs')
 
-const config = require('../config')()
-const client = require('../')(config)
+const keys = require('./keys.js')
+const client = require('../')(keys)
 
 const image = path.join(__dirname, '/image-506x253.jpg')
 const query = { media_data: fs.readFileSync(image).toString('base64') }
@@ -16,11 +16,11 @@ const post = ({ media_id_string = '' } = {}) => {
     media_ids: media_id_string
   }
 
-  client.push('statuses/update', tweet, (error, { text }) => {
+  client.push('statuses/update', tweet, (error, data) => {
     if (error) {
       console.error(error)
     } else {
-      console.log(text)
+      console.log(data.text)
     }
   })
 }

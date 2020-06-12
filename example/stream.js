@@ -1,7 +1,7 @@
 'use strict'
 
-const config = require('../config')()
-const client = require('../')(config)
+const keys = require('./keys.js')
+const client = require('../')(keys)
 
 client
   .tail('statuses/sample')

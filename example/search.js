@@ -1,12 +1,12 @@
 'use strict'
 
-const config = require('../config')()
-const client = require('../')(config)
+const keys = require('./keys.js')
+const client = require('../')(keys)
 
-client.pull('search/tweets', { q: '#IraqCasualties' }, (error, { search_metadata }) => {
+client.pull('search/tweets', { q: '#IraqCasualties' }, (error, data) => {
   if (error) {
     console.error(error)
   } else {
-    console.log(search_metadata)
+    console.log(data.search_metadata)
   }
 })
