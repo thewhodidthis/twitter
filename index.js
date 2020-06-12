@@ -7,61 +7,66 @@ const { fixPath, simpleOauth, strictEncode, isFunction } = require('./helper')
 const { split, unite } = require('./parser')
 const { version } = require('./package.json')
 
-const basePath = '/1.1/'
-const defaults = {
-  headers: { 'Accept': '*/*', 'User-Agent': `minion-${version}` },
-  hostname: 'api.twitter.com',
-  method: 'GET',
-  port: 443
-}
-
-const createClient = (login = {}) => {
-  const authFrom = simpleOauth(login)
-
-  const send = (request = {}, params, parser) => {
-    const { path } = request
+const createClient = (credentials = {}) => {
+  const getAuthorizationToken = simpleOauth(credentials)
+  const send = (options = {}, params, parser) => {
+    const { path } = options
 
     // For now, but see: https://dev.twitter.com/webhooks/account-activity
     if (path === 'user' || path === 'site') {
-      request.hostname += path
+      options.hostname += path
     }
 
     // Marginally relevant for GET requests as well
     if (path.includes('media')) {
-      request.hostname = 'upload.twitter.com'
+      options.hostname = 'upload.twitter.com'
     }
 
     // When streaming
     if (path.includes('filter')) {
-      request.method = 'POST'
+      options.method = 'POST'
     }
 
     const queryString = stringify(params, null, null, { encodeURIComponent: strictEncode })
 
+    const defaults = {
+      headers: {
+        'Accept': '*/*',
+        'User-Agent': `minion-${version}`
+      },
+      hostname: 'api.twitter.com',
+      method: 'GET',
+      port: 443
+    }
+
+    const settings = Object.assign({}, defaults, options)
+
+    const basePath = '/1.1/'
     const pathname = fixPath(basePath, path)
-    const settings = Object.assign({}, defaults, request)
 
     settings.path = queryString ? `${pathname}?${queryString}` : pathname
-    settings.headers.authorization = authFrom(settings, params)
+    settings.headers.authorization = getAuthorizationToken(settings, params)
 
-    https.request(settings)
+    https
+      .request(settings)
       .on('error', (e) => {
         parser.emit('error', e)
       })
       .on('response', (response) => {
-        if (response.statusCode === 200) {
-          response.pipe(parser)
+        const { socket, statusCode: code, statusMessage: message } = response
+
+        if (code === 200) {
+          response
+            .pipe(parser)
             .on('finish', () => {
-              response.socket.destroy()
+              socket.destroy()
             })
         } else {
-          const { statusCode: code, statusMessage: message } = response
-
           parser.emit('error', { code, message })
         }
 
         response
-          .on('error', (e) => {
+          .on('aborted', (e) => {
             parser.emit('error', e)
           })
       })
@@ -70,20 +75,25 @@ const createClient = (login = {}) => {
     return parser
   }
 
-  const pull = (request = {}, ...rest) => {
+  // Need callback to setup the parser
+  const pull = (options = {}, ...rest) => {
     const callback = rest.find(isFunction)
-    const params = rest.filter(a => !isFunction(a)).pop()
+    const params = rest.filter(item => !isFunction(item)).pop()
 
-    const { hostname } = request
+    const { hostname } = options
     const parser = (hostname && hostname.includes('stream') ? split : unite)(callback)
 
-    return send(request, params, parser)
+    return send(options, params, parser)
   }
 
   return {
-    pull: (path, ...rest) => pull({ path }, ...rest),
-    push: (path, ...rest) => pull({ path, method: 'POST' }, ...rest),
+    // Remove
     drop: (path, ...rest) => pull({ path, method: 'DELETE' }, ...rest),
+    // Read
+    pull: (path, ...rest) => pull({ path }, ...rest),
+    // Publish
+    push: (path, ...rest) => pull({ path, method: 'POST' }, ...rest),
+    // Stream
     tail: (path, ...rest) => pull({ path, hostname: 'stream.twitter.com' }, ...rest)
   }
 }
