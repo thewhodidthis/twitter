@@ -4,6 +4,9 @@ const crypto = require('crypto')
 const url = require('url')
 const { stringify } = require('querystring')
 
+// Used to separate out callbacks when parsing optional arguments
+const isFunction = a => typeof a === 'function'
+
 // Expand on `encodeURIComponent` for percent encoding that works
 // https://github.com/kevva/strict-uri-encode
 const repair = c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
@@ -28,6 +31,7 @@ const sorted = (source) => {
 }
 
 // OAuth string compilation from scratch
+// https://developer.twitter.com/en/docs/basics/authentication/guides
 const simpleOauth = (keys = {}) => {
   const login = Object.assign({
     access_token_key: null,
@@ -73,8 +77,5 @@ const simpleOauth = (keys = {}) => {
     return `OAuth ${signed}`
   }
 }
-
-// For determining callback or params
-const isFunction = a => typeof a === 'function'
 
 module.exports = { fixPath, simpleOauth, strictEncode, isFunction }
