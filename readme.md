@@ -27,7 +27,7 @@ That would make it possible to, for example,
 
 ```sh
 # Let example know of your login information
-export $(cat .npmrc) && node node_modules/@thewhodidthis/twitter/example.js
+export $(cat .npmrc) && node node_modules/@thewhodidthis/twitter/example
 ```
 
 The methods provided are: `tail()` for streaming, `push()` for publishing, `drop()` for removing, and `pull()` for reading tweets. For example,
