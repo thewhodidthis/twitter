@@ -23,7 +23,7 @@ ACCESS_TOKEN_KEY=***
 ACCESS_TOKEN_SECRET=***
 ```
 
-That would make it possible to, for example,
+That would then make it possible to, for example,
 
 ```sh
 # Let example know of your OAuth 1.0a details
