@@ -13,7 +13,7 @@ npm install thewhodidthis/twitter
 
 ## usage
 
-Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API keys to test or to get the enclosed example working locally. 
+Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API credentials to test or to get the enclosed example working locally. 
 
 ```npmrc
 # Sample .npmrc
@@ -26,7 +26,7 @@ ACCESS_TOKEN_SECRET=***
 That would make it possible to, for example,
 
 ```sh
-# Let example know of your login information
+# Let example know of your OAuth 1.0a details
 export $(cat .npmrc) && node node_modules/@thewhodidthis/twitter/example
 ```
 
