@@ -13,7 +13,7 @@ npm install thewhodidthis/twitter
 
 ## usage
 
-Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your own `PASSWORD` and `APPLE_ID` information to test or to get the enclosed example working locally. 
+Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API keys to test or to get the enclosed example working locally. 
 
 ```npmrc
 # Sample .npmrc
