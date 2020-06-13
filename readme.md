@@ -1,6 +1,6 @@
 ## about
 
-A Twitter API client for Node.js with own [OAuth](https://developer.twitter.com/en/docs/basics/authentication/guides) and [NDJSON](https://github.com/ndjson/ndjson-spec) helpers.
+A Twitter API client for Node.js based off of [twitter](https://www.npmjs.com/package/twitter) in its earlier incarnations, but with own [OAuth](https://developer.twitter.com/en/docs/basics/authentication/guides) helper and slightly modified [NDJSON](https://github.com/ndjson/ndjson-spec) parser.
 
 ## setup
 
@@ -49,14 +49,6 @@ client.pull('search/tweets', { q: '#js' }, (error, result) => {
   }
 })
 ```
-
-## authors
-
-This module is based off of [twitter](https://www.npmjs.com/package/twitter) in its various incarnations, principally the work of:
-
-- [@technoweenie](http://github.com/technoweenie)
-- [@jdub](http://github.com/jdub)
-- [@desmondmorris](http://github.com/desmondmorris)
 
 ## see also
 
