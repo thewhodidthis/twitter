@@ -1,6 +1,6 @@
 {
   "name": "@thewhodidthis/twitter",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Helps do tweets",
   "keywords": [
     "twitter"
@@ -31,7 +31,6 @@
       "camelcase": 0
     }
   },
-  "dependencies": {},
   "devDependencies": {
     "@thewhodidthis/eslint-config": "^0.1.5",
     "eslint": "^7.2.0",
