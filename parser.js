@@ -38,7 +38,9 @@ const split = (callback = noop, delimiter = /\r?\n/) => {
   })
 
   parser
-    .on('error', callback)
+    .on('error', (e) => {
+      callback(e)
+    })
     .on('data', (data) => {
       callback(null, data)
     })
@@ -59,7 +61,9 @@ const unite = (callback = noop) => {
   })
 
   parser
-    .on('error', callback)
+    .on('error', (e) => {
+      callback(e)
+    })
     .on('finish', () => {
       // If any of Buffer or JSON operations throw, the error gets
       // passed on to `callback` via the listener above
