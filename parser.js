@@ -4,10 +4,8 @@ const { Writable } = require('stream')
 
 const noop = v => v
 
-// My ndjson stream informed by:
-// - ndjson/ndjson-spec
-// - maxogden/ndjson
-// - mcollina/split2 (delimiter)
+// Used for parsing newline delimited JSON when consuming streaming data,
+// based on: @ndjson/ndjson-spec, @maxogden/ndjson, @mcollina/split2
 const split = (callback = noop, delimiter = /\r?\n/) => {
   let store = ''
 
@@ -48,7 +46,8 @@ const split = (callback = noop, delimiter = /\r?\n/) => {
   return parser
 }
 
-// My concat stream
+// The default concat stream used when collecting
+// responses from non streaming API endpoints
 const unite = (callback = noop) => {
   const memo = []
 
@@ -62,8 +61,8 @@ const unite = (callback = noop) => {
   parser
     .on('error', callback)
     .on('finish', () => {
-      // If any of Buffer or JSON operations throw,
-      // the error gets passed on to `callback` via listener above
+      // If any of Buffer or JSON operations throw, the error gets
+      // passed on to `callback` via the listener above
       const body = Buffer.concat(memo).toString()
       const data = JSON.parse(body)
 
