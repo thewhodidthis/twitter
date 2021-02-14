@@ -29,7 +29,7 @@ const split = (callback = noop, delimiter = /\r?\n/) => {
             parser.emit('data', data)
           }
         } catch (e) {
-          callback(e)
+          parser.emit('error', e)
         }
       }
 
