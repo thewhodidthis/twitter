@@ -65,9 +65,10 @@ const createClient = (credentials = {}) => {
           parser.emit('error', { code, message })
         }
 
+        // Emitted instead of an error event when the response closes prematurely
         response
-          .on('aborted', (e) => {
-            parser.emit('error', e)
+          .on('aborted', () => {
+            parser.end()
           })
       })
       .end()
