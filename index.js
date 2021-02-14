@@ -75,7 +75,7 @@ const createClient = (credentials = {}) => {
     return parser
   }
 
-  // Need callback to setup the parser
+  // Shared across public methods below
   const pull = (options = {}, ...rest) => {
     const callback = rest.find(isFunction)
     const params = rest.filter(item => !isFunction(item)).pop()
