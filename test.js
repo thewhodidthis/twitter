@@ -22,20 +22,14 @@ ok
   nock('https://stream.twitter.com')
     .get('/1.1/statuses/sample.json')
     .reply(200, () => `
-      { "created_at": "Mon Jul 31 19:08:39 +0000 2017",
-        "id": 892099708851703800,
-        "id_str": "892099708851703808",
-        "text": "最近ずっとムラムラしてるんです♪https://t.co/JjLBxPWcNZ" }\r
-      { "created_at": "Mon Jul 31 19:08:39 +0000 2017",
-        "id": 892099708860207100,
-        "id_str": "892099708860207105",
-        "text": "Negrometál" }\r
+{ "created_at": "Mon Jul 31 19:08:39 +0000 2017", "id": 892099708851703800, "id_str": "892099708851703808", "text": "最近ずっとムラムラしてるんです♪https://t.co/JjLBxPWcNZ" }\r
+{ "created_at": "Mon Jul 31 19:08:39 +0000 2017", "id": 892099708860207100, "id_str": "892099708860207105", "text": "Negrometál" }\r
     `)
 
-  client
-    .tail('statuses/sample')
+  client.tail('statuses/sample')
     .on('data', ({ text }) => {
-      ok.describe(`text: ${text}`, 'will stream')
+      ok
+        .describe(`text: ${text}`, 'will stream')
         .test(text)
     })
 })()
