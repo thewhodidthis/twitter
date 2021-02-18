@@ -17,6 +17,10 @@ const split = (callback = noop, delimiter = /\r?\n/) => {
       store = items.pop()
 
       for (const item of items) {
+        if (item === '') {
+          continue
+        }
+
         try {
           const data = JSON.parse(item)
           const { errors } = data
