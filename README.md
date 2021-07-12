@@ -13,7 +13,7 @@ npm install thewhodidthis/twitter
 
 ## usage
 
-Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API credentials to test or to get the enclosed example working locally.
+Consider creating an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API credentials to test or to get the enclosed examples working locally.
 
 ```npmrc
 # Sample .npmrc
@@ -23,11 +23,11 @@ ACCESS_TOKEN_KEY=***
 ACCESS_TOKEN_SECRET=***
 ```
 
-That would then make it possible to, for example,
+That would then make it possible to:
 
 ```sh
-# Let example know of your OAuth 1.0a details
-export $(cat .npmrc) && node node_modules/@thewhodidthis/twitter/example
+# Let image upload example know of your OAuth 1.0a details
+export $(cat .npmrc) && node node_modules/@thewhodidthis/twitter/example/media.js
 ```
 
 The methods provided are: `tail()` for streaming, `push()` for publishing, `drop()` for removing, and `pull()` for reading tweets. For example,
