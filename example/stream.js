@@ -1,12 +1,12 @@
-'use strict'
+import createClient from "../main.js"
+import keys from "./keys.js"
 
-const keys = require('./keys.js')
-const client = require('../')(keys)
+const client = createClient(keys)
 
 client
-  .tail('statuses/sample')
-  .on('error', console.error)
-  .on('data', ({ text }) => {
+  .tail("statuses/sample")
+  .on("error", console.error)
+  .on("data", ({ text }) => {
     if (text) {
       console.log(text)
     }

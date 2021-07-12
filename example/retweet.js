@@ -1,7 +1,7 @@
-'use strict'
+import createClient from "../main.js"
+import keys from "./keys.js"
 
-const keys = require('./keys.js')
-const client = require('../')(keys)
+const client = createClient(keys)
 
 const logger = (error, data) => {
   if (error) {
@@ -19,4 +19,4 @@ const retweet = (error, data) => {
   }
 }
 
-client.pull('statuses/user_timeline', { screen_name: '64326c30656d4a7' }, retweet)
+client.pull("statuses/user_timeline", { screen_name: "64326c30656d4a7" }, retweet)

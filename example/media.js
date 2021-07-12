@@ -1,22 +1,17 @@
-'use strict'
+import createClient from "../main.js"
+import image from "./image.js"
+import keys from "./keys.js"
 
-const path = require('path')
-const fs = require('fs')
-
-const keys = require('./keys.js')
-const client = require('../')(keys)
-
-const image = path.join(__dirname, '/image-506x253.jpg')
-const query = { media_data: fs.readFileSync(image).toString('base64') }
+const client = createClient(keys)
 
 // Repost
-const post = ({ media_id_string = '' } = {}) => {
+const post = ({ media_id_string = "" } = {}) => {
   const tweet = {
-    status: 'Look ma, uploads!',
-    media_ids: media_id_string
+    status: "Look ma, uploads!",
+    media_ids: media_id_string,
   }
 
-  client.push('statuses/update', tweet, (error, data) => {
+  client.push("statuses/update", tweet, (error, data) => {
     if (error) {
       console.error(error)
     } else {
@@ -26,7 +21,7 @@ const post = ({ media_id_string = '' } = {}) => {
 }
 
 // Upload
-client.push('media/upload', query, (error, data) => {
+client.push("media/upload", { media_data: image }, (error, data) => {
   if (error) {
     console.error(error)
   } else {

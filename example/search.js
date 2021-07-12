@@ -1,9 +1,9 @@
-'use strict'
+import createClient from "../main.js"
+import keys from "./keys.js"
 
-const keys = require('./keys.js')
-const client = require('../')(keys)
+const client = createClient(keys)
 
-client.pull('search/tweets', { q: '#IraqCasualties' }, (error, data) => {
+client.pull("search/tweets", { q: "#IraqCasualties" }, (error, data) => {
   if (error) {
     console.error(error)
   } else {

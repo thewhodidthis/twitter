@@ -1,13 +1,11 @@
-'use strict'
+import crypto from "crypto"
+import createClient from "../main.js"
+import keys from "./keys.js"
 
-const crypto = require('crypto')
+const randomHexString = crypto.randomBytes(64).toString("hex").substring(0, 144)
+const client = createClient(keys)
 
-const keys = require('./keys.js')
-const client = require('../')(keys)
-
-const randomHexString = crypto.randomBytes(64).toString('hex').substring(0, 144)
-
-client.push('statuses/update', { status: randomHexString }, (error, data) => {
+client.push("statuses/update", { status: randomHexString }, (error, data) => {
   if (error) {
     console.error(error)
   } else {
