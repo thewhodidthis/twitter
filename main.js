@@ -1,7 +1,7 @@
-import https from 'https'
-import { stringify } from 'querystring'
-import { fixPath, simpleOauth, strictEncode, isFunction } from './helper.js'
-import { split, unite } from './parser.js'
+import https from "https"
+import { stringify } from "querystring"
+import { fixPath, isFunction, simpleOauth, strictEncode } from "./helper.js"
+import { split, unite } from "./parser.js"
 
 export default function createClient(credentials = {}) {
   const getAuthorizationToken = simpleOauth(credentials)
@@ -9,35 +9,35 @@ export default function createClient(credentials = {}) {
     const { path } = options
 
     // For now, but see: https://dev.twitter.com/webhooks/account-activity
-    if (path === 'user' || path === 'site') {
+    if (path === "user" || path === "site") {
       options.hostname += path
     }
 
     // Marginally relevant for GET requests as well
-    if (path.includes('media')) {
-      options.hostname = 'upload.twitter.com'
+    if (path.includes("media")) {
+      options.hostname = "upload.twitter.com"
     }
 
     // When streaming
-    if (path.includes('filter')) {
-      options.method = 'POST'
+    if (path.includes("filter")) {
+      options.method = "POST"
     }
 
     const queryString = stringify(params, null, null, { encodeURIComponent: strictEncode })
 
     const defaults = {
       headers: {
-        'Accept': '*/*',
-        'User-Agent': `minion`
+        "Accept": "*/*",
+        "User-Agent": `minion`,
       },
-      hostname: 'api.twitter.com',
-      method: 'GET',
-      port: 443
+      hostname: "api.twitter.com",
+      method: "GET",
+      port: 443,
     }
 
     const settings = Object.assign({}, defaults, options)
 
-    const basePath = '/1.1/'
+    const basePath = "/1.1/"
     const pathname = fixPath(basePath, path)
 
     settings.path = queryString ? `${pathname}?${queryString}` : pathname
@@ -45,25 +45,25 @@ export default function createClient(credentials = {}) {
 
     https
       .request(settings)
-      .on('error', (e) => {
-        parser.emit('error', e)
+      .on("error", (e) => {
+        parser.emit("error", e)
       })
-      .on('response', (response) => {
+      .on("response", (response) => {
         const { socket, statusCode: code, statusMessage: message } = response
 
         if (code === 200) {
           response
             .pipe(parser)
-            .on('finish', () => {
+            .on("finish", () => {
               socket.destroy()
             })
         } else {
-          parser.emit('error', { code, message })
+          parser.emit("error", { code, message })
         }
 
         // Emitted instead of an error event when the response closes prematurely
         response
-          .on('aborted', () => {
+          .on("aborted", () => {
             parser.end()
           })
       })
@@ -78,19 +78,19 @@ export default function createClient(credentials = {}) {
     const params = rest.filter(item => !isFunction(item)).pop()
 
     const { hostname } = options
-    const parser = (hostname && hostname.includes('stream') ? split : unite)(callback)
+    const parser = (hostname && hostname.includes("stream") ? split : unite)(callback)
 
     return send(options, params, parser)
   }
 
   return {
     // Remove
-    drop: (path, ...rest) => pull({ path, method: 'DELETE' }, ...rest),
+    drop: (path, ...rest) => pull({ path, method: "DELETE" }, ...rest),
     // Read
     pull: (path, ...rest) => pull({ path }, ...rest),
     // Publish
-    push: (path, ...rest) => pull({ path, method: 'POST' }, ...rest),
+    push: (path, ...rest) => pull({ path, method: "POST" }, ...rest),
     // Stream
-    tail: (path, ...rest) => pull({ path, hostname: 'stream.twitter.com' }, ...rest)
+    tail: (path, ...rest) => pull({ path, hostname: "stream.twitter.com" }, ...rest),
   }
 }

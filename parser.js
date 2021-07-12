@@ -1,11 +1,11 @@
-import { Writable } from 'stream'
+import { Writable } from "stream"
 
 const noop = v => v
 
 // Used for parsing newline delimited JSON when consuming streaming
 // data, based on: @ndjson/ndjson-spec, @maxogden/ndjson, @mcollina/split2
 export function split(callback = noop, delimiter = /\r?\n/) {
-  let store = ''
+  let store = ""
 
   const parser = new Writable({
     write(chunk, _, next) {
@@ -15,7 +15,7 @@ export function split(callback = noop, delimiter = /\r?\n/) {
       store = items.pop()
 
       for (const item of items) {
-        if (item === '') {
+        if (item === "") {
           continue
         }
 
@@ -25,25 +25,25 @@ export function split(callback = noop, delimiter = /\r?\n/) {
 
           if (errors) {
             errors.forEach((e) => {
-              parser.emit('error', e)
+              parser.emit("error", e)
             })
           } else {
-            parser.emit('data', data)
+            parser.emit("data", data)
           }
         } catch (e) {
-          parser.emit('error', e)
+          parser.emit("error", e)
         }
       }
 
       next()
-    }
+    },
   })
 
   parser
-    .on('error', (e) => {
+    .on("error", (e) => {
       callback(e)
     })
-    .on('data', (data) => {
+    .on("data", (data) => {
       callback(null, data)
     })
 
@@ -59,14 +59,14 @@ export function unite(callback = noop) {
     write(chunk, _, next) {
       memo.push(chunk)
       next()
-    }
+    },
   })
 
   parser
-    .on('error', (e) => {
+    .on("error", (e) => {
       callback(e)
     })
-    .on('finish', () => {
+    .on("finish", () => {
       // If any of Buffer or JSON operations throw, the error gets
       // passed on to `callback` via the listener above
       const body = Buffer.concat(memo).toString()
@@ -76,7 +76,7 @@ export function unite(callback = noop) {
 
       if (errors) {
         errors.forEach((e) => {
-          parser.emit('error', e)
+          parser.emit("error", e)
         })
       } else {
         callback(null, data)
