@@ -1,16 +1,14 @@
-'use strict'
-
-const { Writable } = require('stream')
+import { Writable } from 'stream'
 
 const noop = v => v
 
-// Used for parsing newline delimited JSON when consuming streaming data,
-// based on: @ndjson/ndjson-spec, @maxogden/ndjson, @mcollina/split2
-const split = (callback = noop, delimiter = /\r?\n/) => {
+// Used for parsing newline delimited JSON when consuming streaming
+// data, based on: @ndjson/ndjson-spec, @maxogden/ndjson, @mcollina/split2
+export function split(callback = noop, delimiter = /\r?\n/) {
   let store = ''
 
   const parser = new Writable({
-    write(chunk, encoding, next) {
+    write(chunk, _, next) {
       const input = store + chunk.toString()
       const items = input.split(delimiter)
 
@@ -54,11 +52,11 @@ const split = (callback = noop, delimiter = /\r?\n/) => {
 
 // The default concat stream used when collecting
 // responses from non streaming API endpoints
-const unite = (callback = noop) => {
+export function unite(callback = noop) {
   const memo = []
 
   const parser = new Writable({
-    write(chunk, encoding, next) {
+    write(chunk, _, next) {
       memo.push(chunk)
       next()
     }
@@ -87,5 +85,3 @@ const unite = (callback = noop) => {
 
   return parser
 }
-
-module.exports = { split, unite }

@@ -1,13 +1,9 @@
-'use strict'
+import https from 'https'
+import { stringify } from 'querystring'
+import { fixPath, simpleOauth, strictEncode, isFunction } from './helper.js'
+import { split, unite } from './parser.js'
 
-const https = require('https')
-const { stringify } = require('querystring')
-
-const { fixPath, simpleOauth, strictEncode, isFunction } = require('./helper')
-const { split, unite } = require('./parser')
-const { version } = require('./package.json')
-
-const createClient = (credentials = {}) => {
+export default function createClient(credentials = {}) {
   const getAuthorizationToken = simpleOauth(credentials)
   const send = (options = {}, params, parser) => {
     const { path } = options
@@ -32,7 +28,7 @@ const createClient = (credentials = {}) => {
     const defaults = {
       headers: {
         'Accept': '*/*',
-        'User-Agent': `minion-${version}`
+        'User-Agent': `minion`
       },
       hostname: 'api.twitter.com',
       method: 'GET',
@@ -98,5 +94,3 @@ const createClient = (credentials = {}) => {
     tail: (path, ...rest) => pull({ path, hostname: 'stream.twitter.com' }, ...rest)
   }
 }
-
-module.exports = createClient

@@ -1,21 +1,19 @@
-'use strict'
-
-const crypto = require('crypto')
-const url = require('url')
-const { stringify } = require('querystring')
+import crypto from 'crypto'
+import url from 'url'
+import { stringify } from 'querystring'
 
 // Used to separate out callbacks when parsing optional arguments
-const isFunction = a => typeof a === 'function'
+export const isFunction = a => typeof a === 'function'
 
 // Expand on `encodeURIComponent` for percent encoding that works
 // https://github.com/kevva/strict-uri-encode
 const repair = c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
-const strictEncode = s => encodeURIComponent(s).replace(/[!'()*]/g, repair)
+export const strictEncode = s => encodeURIComponent(s).replace(/[!'()*]/g, repair)
 
 // Path math
 const cutTrailingSlash = s => s.replace(/\/$/, '')
 const addExtension = (s, ext = 'json') => (s.split('.').pop() === ext ? s : `${s}.${ext}`)
-const fixPath = (base = '', path = '') => addExtension(cutTrailingSlash(url.resolve(base, path)))
+export const fixPath = (base = '', path = '') => addExtension(cutTrailingSlash(url.resolve(base, path)))
 
 // Reorder object keys
 // https://github.com/nodejs/node/issues/6594
@@ -32,7 +30,7 @@ const sorted = (source) => {
 
 // OAuth string compilation from scratch
 // https://developer.twitter.com/en/docs/basics/authentication/guides
-const simpleOauth = (keys = {}) => {
+export function simpleOauth(keys = {}) {
   const login = Object.assign({
     access_token_key: null,
     access_token_secret: null,
@@ -77,5 +75,3 @@ const simpleOauth = (keys = {}) => {
     return `OAuth ${signed}`
   }
 }
-
-module.exports = { fixPath, simpleOauth, strictEncode, isFunction }
