@@ -13,7 +13,7 @@ npm install thewhodidthis/twitter
 
 ## usage
 
-Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API credentials to test or to get the enclosed example working locally. 
+Please create an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-config-file) with your API credentials to test or to get the enclosed example working locally.
 
 ```npmrc
 # Sample .npmrc
@@ -33,15 +33,15 @@ export $(cat .npmrc) && node node_modules/@thewhodidthis/twitter/example
 The methods provided are: `tail()` for streaming, `push()` for publishing, `drop()` for removing, and `pull()` for reading tweets. For example,
 
 ```js
-const createClient = require('@thewhodidthis/twitter')
+const createClient = require("@thewhodidthis/twitter")
 const client = createClient({
-  consumer_key: '',
-  consumer_secret: '',
-  access_token_key: '',
-  access_token_secret: ''
+  consumer_key: "",
+  consumer_secret: "",
+  access_token_key: "",
+  access_token_secret: "",
 })
 
-client.pull('search/tweets', { q: '#js' }, (error, result) => {
+client.pull("search/tweets", { q: "#js" }, (error, result) => {
   if (error) {
     console.error(error)
   } else {
