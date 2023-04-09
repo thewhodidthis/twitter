@@ -17,10 +17,10 @@ Consider creating an [`.npmrc`](https://docs.npmjs.com/files/npmrc#per-project-c
 
 ```npmrc
 # Sample .npmrc
-CONSUMER_KEY=***
-CONSUMER_SECRET=***
-ACCESS_TOKEN_KEY=***
-ACCESS_TOKEN_SECRET=***
+ACCESS_TOKEN_KEY=****
+ACCESS_TOKEN_SECRET=****
+CONSUMER_KEY=****
+CONSUMER_SECRET=****
 ```
 
 That would then make it possible to:
