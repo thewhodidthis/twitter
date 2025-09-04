@@ -1,0 +1,30 @@
+{
+  "name": "@thewhodidthis/twitter",
+  "version": "4.0.0",
+  "description": "Helps do tweets",
+  "keywords": [
+    "twitter"
+  ],
+  "homepage": "https://github.com/thewhodidthis/twitter#readme",
+  "bugs": "https://github.com/thewhodidthis/twitter/issues",
+  "repository": "github:thewhodidthis/twitter",
+  "license": "MIT",
+  "author": "Thepersonwhodidthis <me@thewhodidthis.com> (http://thewhodidthis.com)",
+  "type": "module",
+  "exports": "./main.js",
+  "main": "./main.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "devDependencies": {
+    "nock": "^13.1.3",
+    "tapeless": "github:thewhodidthis/tapeless"
+  },
+  "engines": {
+    "node": ">=14.17.0",
+    "npm": ">=6.14.13"
+  }
+}
